@@ -3,6 +3,6 @@ module com.example.eruhexgame {
     requires javafx.fxml;
 
 
-    opens com.example.eruhexgame to javafx.fxml;
-    exports com.example.eruhexgame;
+    opens com.eruhexgame to javafx.fxml;
+    exports com.eruhexgame;
 }
