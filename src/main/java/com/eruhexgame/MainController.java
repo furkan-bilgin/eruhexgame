@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Polygon;
+import javafx.scene.text.Text;
 
 public class MainController {
     @FXML
@@ -15,8 +15,17 @@ public class MainController {
     private RadioButton tile11x11RadioButton;
     @FXML
     private RadioButton tile17x17RadioButton;
+    @FXML
+    private Text turnText;
+    @FXML
+    public void initialize() {
+        // Bilgi penceresini göster
+        showInfoDialog();
+    }
 
     private GameModel gameModel;
+
+    private int turnCount = 1; // Tur sayısını burada tanımlayın
 
     public void initializeTiles(int width, int height) {
         tileContainer.getChildren().clear();
@@ -47,8 +56,12 @@ public class MainController {
             if (gameState) {
                 showWinPopup(player);
                 gameModel = null;
+            } else {
+                incrementTurnCount(); // Oyuncunun hamle yaptığı her seferde tur sayısını arttırır
             }
         } catch (Exception e) {
+            System.err.println("An error occurred while handling tile click: " + e.getMessage());
+            e.printStackTrace();
             // Tile is already occupied
         }
     }
@@ -58,9 +71,14 @@ public class MainController {
         alert.setTitle("Game Over");
         alert.setHeaderText(null);
         String playerColor = player == GameModel.PLAYER1 ? "RED" : "BLUE";
-        alert.setContentText("Player " + playerColor + " wins!");
+        alert.setContentText("Player " + playerColor + " wins in turn " + turnCount + "!");
 
         alert.showAndWait();
+    }
+
+    private void incrementTurnCount() {
+        turnCount++;
+        turnText.setText("Turn: " + turnCount); // Tur sayısını görsel arayüzde günceller
     }
 
     public void onStartButtonClick() {
@@ -80,5 +98,17 @@ public class MainController {
 
         initializeTiles(width, height);
         gameModel = new GameModel(width, height);
+
+        turnCount=0;
+        turnText.setText("Turn " + turnCount);
+    }
+
+    public void showInfoDialog() {
+        Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+        infoAlert.setTitle("Hex Game Information");
+        infoAlert.setHeaderText("Welcome to the Hex Game!");
+        infoAlert.setContentText("Hex is a two-player abstract strategy board game in which players attempt to connect opposite sides of a hexagonal grid. Players alternate placing pieces on the board with the goal of forming a continuous chain of their own pieces connecting their designated sides of the board.");
+
+        infoAlert.showAndWait();
     }
 }

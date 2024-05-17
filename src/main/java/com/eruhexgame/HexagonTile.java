@@ -2,6 +2,10 @@ package com.eruhexgame;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
+import javafx.scene.text.Text;
+
 
 public class HexagonTile extends Polygon {
     public final static double r = 25;
@@ -9,6 +13,13 @@ public class HexagonTile extends Polygon {
     public final static double TILE_HEIGHT = 2 * r;
     public final static double TILE_WIDTH = 2 * n;
 
+    private Text turnText;
+    private int turnCount = 1;
+
+    public HexagonTile(double x, double y, Text turnText)
+    {
+        this.turnText = turnText;
+    }
 
     public HexagonTile(double x, double y) {
         getPoints().addAll(
@@ -26,11 +37,22 @@ public class HexagonTile extends Polygon {
     }
 
     public void setTileColorByPlayerId(int playerId) {
+        Color newColor;
+
         if (playerId == GameModel.PLAYER1) {
-            setFill(Color.RED);
+            newColor = Color.RED;
         } else if (playerId == GameModel.PLAYER2) {
-            setFill(Color.BLUE);
+            newColor = Color.BLUE;
+        } else {
+            return;
         }
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), this);
+        fadeTransition.setFromValue(0.0);
+        fadeTransition.setToValue(1.0);
+
+        setFill(newColor);
+        fadeTransition.play();
+
     }
 
 }
