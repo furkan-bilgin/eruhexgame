@@ -3,6 +3,8 @@ package com.eruhexgame;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.animation.FadeTransition;
+import javafx.animation.FillTransition;
+import javafx.animation.ParallelTransition;
 import javafx.util.Duration;
 import javafx.scene.text.Text;
 
@@ -46,13 +48,19 @@ public class HexagonTile extends Polygon {
         } else {
             return;
         }
+
+        FillTransition fillTransition = new FillTransition(Duration.seconds(0.5), this);
+        fillTransition.setFromValue(Color.YELLOW); // Start from yellow
+        fillTransition.setToValue(newColor); // Transition to new color
+
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), this);
         fadeTransition.setFromValue(0.0);
         fadeTransition.setToValue(1.0);
 
-        setFill(newColor);
-        fadeTransition.play();
+        ParallelTransition parallelTransition = new ParallelTransition(fillTransition, fadeTransition);
+        parallelTransition.play();
+    }
 
     }
 
-}
+
