@@ -4,27 +4,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eruhexgame.MainController">
-  <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-  </padding>
-   <AnchorPane fx:id="tileContainer" prefHeight="780" prefWidth="600" />
-   <VBox prefHeight="20.0" prefWidth="100.0">
-      <children>
-         <HBox prefHeight="20.0" prefWidth="100.0" spacing="10.0">
-            <children>
-              <RadioButton fx:id="tile5x5RadioButton" mnemonicParsing="false" text="5x5">
-                  <toggleGroup>
-                     <ToggleGroup fx:id="boardOption" />
-                  </toggleGroup></RadioButton>
-              <RadioButton fx:id="tile11x11RadioButton" mnemonicParsing="false" text="11x11" toggleGroup="$boardOption" />
-              <RadioButton fx:id="tile17x17RadioButton" mnemonicParsing="false" text="17x17" toggleGroup="$boardOption" />
-                <Button mnemonicParsing="false" onMouseClicked="#onStartButtonClick" text="Start" />
-            </children>
-            <VBox.margin>
-               <Insets />
-            </VBox.margin>
-         </HBox>
-      </children>
-   </VBox>
+<VBox alignment="CENTER" fx:id="mainContainer" prefHeight="600.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eruhexgame.MainController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <AnchorPane fx:id="tileContainer" prefHeight="780" prefWidth="600" />
+    <VBox prefHeight="20.0" prefWidth="100.0">
+        <children>
+            <HBox prefHeight="20.0" prefWidth="100.0" spacing="10.0">
+                <children>
+                    <RadioButton fx:id="tile5x5RadioButton" mnemonicParsing="false" text="5x5">
+                        <toggleGroup>
+                            <ToggleGroup fx:id="boardOption" />
+                        </toggleGroup></RadioButton>
+                    <RadioButton fx:id="tile11x11RadioButton" mnemonicParsing="false" text="11x11" toggleGroup="$boardOption" />
+                    <RadioButton fx:id="tile17x17RadioButton" mnemonicParsing="false" text="17x17" toggleGroup="$boardOption" />
+                    <Button fx:id="startButton" mnemonicParsing="false" onMouseClicked="#onStartButtonClick" text="Start" />
+                </children>
+                <VBox.margin>
+                    <Insets />
+                </VBox.margin>
+            </HBox>
+        </children>
+    </VBox>
 </VBox>

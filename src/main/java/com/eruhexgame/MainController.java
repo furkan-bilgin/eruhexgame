@@ -1,10 +1,19 @@
 package com.eruhexgame;
 
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.geometry.Insets;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Background;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+
 
 public class MainController {
     @FXML
@@ -18,9 +27,15 @@ public class MainController {
     @FXML
     private Text turnText;
     @FXML
+    private VBox mainContainer;
+    @FXML
+    private Button startButton;
+    @FXML
     public void initialize() {
         // Bilgi penceresini göster
         showInfoDialog();
+        setSceneBackground();
+        setButtonBackgroundColor();
     }
 
     private GameModel gameModel;
@@ -57,11 +72,9 @@ public class MainController {
                 showWinPopup(player);
                 gameModel = null;
             } else {
-                incrementTurnCount(); // Oyuncunun hamle yaptığı her seferde tur sayısını arttırır
+                incrementTurnCount();
             }
         } catch (Exception e) {
-            System.err.println("An error occurred while handling tile click: " + e.getMessage());
-            e.printStackTrace();
             // Tile is already occupied
         }
     }
@@ -78,7 +91,7 @@ public class MainController {
 
     private void incrementTurnCount() {
         turnCount++;
-        turnText.setText("Turn: " + turnCount); // Tur sayısını görsel arayüzde günceller
+        turnText.setText("Turn: " + turnCount);
     }
 
     public void onStartButtonClick() {
@@ -111,4 +124,16 @@ public class MainController {
 
         infoAlert.showAndWait();
     }
+
+    private void setSceneBackground() {
+        BackgroundImage myBI= new BackgroundImage(new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSos5ttWATv-Iu1S40BtNCTpXSAd6RY9oW-oSr_N9sVcg&s",462,620,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+
+        mainContainer.setBackground(new Background(myBI));
+    }
+    private void setButtonBackgroundColor() {
+        startButton.setBackground(new Background(new BackgroundFill(Color.LIGHTGREYgir, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+
 }
