@@ -1,5 +1,6 @@
 package com.eruhexgame;
 
+import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -13,7 +14,9 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Background;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
+import java.util.Random;
 
 public class MainController {
     @FXML
@@ -30,11 +33,14 @@ public class MainController {
     private VBox mainContainer;
     @FXML
     private Button startButton;
+
     @FXML
     public void initialize() {
         // Bilgi penceresini göster
         showInfoDialog();
+        // Arkaplanı ayarla
         setSceneBackground();
+        // Buton rengini ayarla
         setButtonBackgroundColor();
     }
 
@@ -71,6 +77,7 @@ public class MainController {
             if (gameState) {
                 showWinPopup(player);
                 gameModel = null;
+                showConfettiEffect();
             } else {
                 incrementTurnCount();
             }
@@ -91,7 +98,7 @@ public class MainController {
 
     private void incrementTurnCount() {
         turnCount++;
-        turnText.setText("Turn: " + turnCount);
+        turnText.setText("Turn: " + turnCount); // Tur sayısını görsel arayüzde günceller
     }
 
     public void onStartButtonClick() {
@@ -112,7 +119,7 @@ public class MainController {
         initializeTiles(width, height);
         gameModel = new GameModel(width, height);
 
-        turnCount=0;
+        turnCount = 0;
         turnText.setText("Turn " + turnCount);
     }
 
@@ -126,14 +133,42 @@ public class MainController {
     }
 
     private void setSceneBackground() {
-        BackgroundImage myBI= new BackgroundImage(new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSos5ttWATv-Iu1S40BtNCTpXSAd6RY9oW-oSr_N9sVcg&s",462,620,false,true),
+        BackgroundImage myBI = new BackgroundImage(
+                new Image("https://static.vecteezy.com/system/resources/thumbnails/008/383/980/small_2x/abstract-seamless-pattern-white-gray-ceramic-tiles-floor-concrete-hexagonal-paver-blocks-design-geometric-mosaic-texture-for-the-decoration-of-the-bathroom-illustration-free-vector.jpg", 462, 400, false, true),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
-
+        // Then you set to your node
         mainContainer.setBackground(new Background(myBI));
     }
+
     private void setButtonBackgroundColor() {
-        startButton.setBackground(new Background(new BackgroundFill(Color.LIGHTGREYgir, CornerRadii.EMPTY, Insets.EMPTY)));
+        startButton.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
+    private void showConfettiEffect() {
+        Random random = new Random();
+        int numConfetti = 300; // Konfeti parçacık sayısı
+
+        for (int i = 0; i < numConfetti; i++) {
+            Rectangle confetti = new Rectangle(5, 10);
+            confetti.setFill(Color.color(random.nextDouble(), random.nextDouble(), random.nextDouble()));
+            confetti.setX(random.nextDouble() * tileContainer.getWidth());
+            confetti.setY(-10); // Başlangıç noktası yukarıda
+
+            tileContainer.getChildren().add(confetti);
+
+            // Animasyon
+            TranslateTransition fall = new TranslateTransition(Duration.seconds(2 + random.nextDouble()), confetti);
+            fall.setToY(tileContainer.getHeight() + 10);
+            fall.setInterpolator(Interpolator.LINEAR);
+
+            RotateTransition rotate = new RotateTransition(Duration.seconds(2 + random.nextDouble()), confetti);
+            rotate.setByAngle(360);
+            rotate.setInterpolator(Interpolator.LINEAR);
+
+            ParallelTransition animation = new ParallelTransition(fall, rotate);
+            animation.setOnFinished(e -> tileContainer.getChildren().remove(confetti));
+            animation.play();
+        }
+    }
 }

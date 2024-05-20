@@ -49,11 +49,11 @@ public class HexagonTile extends Polygon {
             return;
         }
 
-        FillTransition fillTransition = new FillTransition(Duration.seconds(0.5), this);
+        FillTransition fillTransition = new FillTransition(Duration.seconds(0.2), this);
         fillTransition.setFromValue(Color.NAVAJOWHITE); // Start from yellow
         fillTransition.setToValue(newColor); // Transition to new color
 
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), this);
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.2), this);
         fadeTransition.setFromValue(0.0);
         fadeTransition.setToValue(1.0);
 
