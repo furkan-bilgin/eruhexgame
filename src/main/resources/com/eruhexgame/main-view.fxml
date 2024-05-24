@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <VBox fx:id="mainContainer" alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eruhexgame.MainController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -20,8 +21,9 @@
                     <RadioButton fx:id="tile11x11RadioButton" mnemonicParsing="false" text="11x11" toggleGroup="$boardOption" />
                     <RadioButton fx:id="tile17x17RadioButton" mnemonicParsing="false" text="17x17" toggleGroup="$boardOption" />
                     <Button fx:id="startButton" mnemonicParsing="false" onMouseClicked="#onStartButtonClick" text="Start" />
-               <ChoiceBox fx:id="choiceBox" prefWidth="150.0" />
-               <ChoiceBox fx:id="choiceBox2" prefWidth="150.0" />
+                   <ChoiceBox fx:id="choiceBox" prefWidth="150.0" />
+                   <ChoiceBox fx:id="choiceBox2" prefWidth="150.0" />
+                    <Text fx:id="turnText" />
                 </children>
                 <VBox.margin>
                     <Insets />

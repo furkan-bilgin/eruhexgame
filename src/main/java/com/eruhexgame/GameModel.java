@@ -8,7 +8,9 @@ public class GameModel {
     public static final int PLAYER1 = 1;
     public static final int PLAYER2 = 2;
     private int[][] tiles;
+
     private int currentPlayer = PLAYER1;
+    private int turnCount = 0;
 
     public GameModel(int width, int height) {
         tiles = new int[width][height];
@@ -19,9 +21,16 @@ public class GameModel {
         }
     }
 
+    public int getTurnCount() {
+        return turnCount;
+    }
+
     public int onTileClick(int x, int y) throws Exception {
         if (tiles[x][y] != EMPTY) {
             throw new Exception("Tile is already occupied");
+        }
+        if (currentPlayer == PLAYER1) {
+            turnCount++;
         }
         tiles[x][y] = currentPlayer;
         currentPlayer = currentPlayer == PLAYER1 ? PLAYER2 : PLAYER1;
@@ -34,9 +43,9 @@ public class GameModel {
         boolean[][] visited = new boolean[tiles.length][tiles[0].length];
         int playerToCheck = currentPlayer == PLAYER1 ? PLAYER2 : PLAYER1;
         if (playerToCheck == PLAYER1) {
-            for (int i = 0; i < tiles[0].length; i ++) {
+            for (int i = 0; i < tiles[0].length; i++) {
                 if (tiles[0][i] == PLAYER1) {
-                    queue.add(new int[]{0, i});
+                    queue.add(new int[] { 0, i });
                     visited[0][i] = true;
                 }
             }
@@ -53,9 +62,9 @@ public class GameModel {
                 }
             }
         } else {
-            for (int i = 0; i < tiles.length; i ++) {
+            for (int i = 0; i < tiles.length; i++) {
                 if (tiles[i][0] == PLAYER2) {
-                    queue.add(new int[]{i, 0});
+                    queue.add(new int[] { i, 0 });
                     visited[i][0] = true;
                 }
             }
@@ -79,16 +88,17 @@ public class GameModel {
     // Get neighbours
     private ArrayList<int[]> getNeighbours(int x, int y) {
         int[][] neighbours = {
-                {x - 1, y},
-                {x + 1, y},
-                {x, y - 1},
-                {x, y + 1},
-                {x - 1, y + 1},
-                {x + 1, y - 1}
+                { x - 1, y },
+                { x + 1, y },
+                { x, y - 1 },
+                { x, y + 1 },
+                { x - 1, y + 1 },
+                { x + 1, y - 1 }
         };
         ArrayList<int[]> validNeighbours = new ArrayList<>();
         for (int[] neighbour : neighbours) {
-            if (neighbour[0] >= 0 && neighbour[0] < tiles.length && neighbour[1] >= 0 && neighbour[1] < tiles[0].length) {
+            if (neighbour[0] >= 0 && neighbour[0] < tiles.length && neighbour[1] >= 0
+                    && neighbour[1] < tiles[0].length) {
                 validNeighbours.add(neighbour);
             }
         }

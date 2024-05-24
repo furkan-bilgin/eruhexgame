@@ -38,6 +38,8 @@ public class MainController {
     @FXML
     private ChoiceBox<String> choiceBox2;
 
+    private GameModel gameModel;
+
     @FXML
     public void initialize() {
         // Bilgi penceresini göster
@@ -48,12 +50,7 @@ public class MainController {
         setButtonBackgroundColor();
         // Oyuncu rengini ayarla
         setColor();
-
     }
-
-    private GameModel gameModel;
-
-    private int turnCount = 1; // Tur sayısını burada tanımlayın
 
     public void initializeTiles(int width, int height) {
         tileContainer.getChildren().clear();
@@ -70,36 +67,40 @@ public class MainController {
             }
         }
     }
+
     Map<String,Color> colors = new HashMap<>();
     Color[] selectedColor = new Color[2];
-    String selectedColorName="RED"; //bitis ekraninda rengi bu degiskenle yazdiriyor
-    String selectedColorName2="BLUE";
+    String selectedColorName = "RED"; //bitis ekraninda rengi bu degiskenle yazdiriyor
+    String selectedColorName2 = "BLUE";
 
-    public void setColor(){
+    public void setColor() {
         choiceBox.getItems().clear();
         choiceBox2.getItems().clear();
         choiceBox.setValue("RED");
         choiceBox2.setValue("BLUE");
-        colors.put("BLACK",Color.BLACK);
-        colors.put("RED",Color.RED);
-        colors.put("YELLOW",Color.YELLOW);
-        colors.put("GREEN",Color.GREEN);
-        colors.put("BLUE",Color.BLUE);
-        colors.put("WHITE",Color.WHITE);
+        colors.put("BLACK", Color.BLACK);
+        colors.put("RED", Color.RED);
+        colors.put("YELLOW", Color.YELLOW);
+        colors.put("GREEN", Color.GREEN);
+        colors.put("BLUE", Color.BLUE);
+        colors.put("WHITE", Color.WHITE);
 
         choiceBox.getItems().addAll(colors.keySet());
         choiceBox2.getItems().addAll(colors.keySet());
 
-        selectedColor[0]=Color.RED;
-        selectedColor[1]=Color.BLUE;
+        selectedColor[0] = Color.RED;
+        selectedColor[1] = Color.BLUE;
+
         choiceBox.setOnAction(e -> {
             selectedColorName = choiceBox.getValue();
-            selectedColor[0] = colors.get(selectedColorName);});
+            selectedColor[0] = colors.get(selectedColorName);
+        });
+
         choiceBox2.setOnAction(e -> {
             selectedColorName2 = choiceBox2.getValue();
-            selectedColor[1] = colors.get(selectedColorName2);});
+            selectedColor[1] = colors.get(selectedColorName2);
+        });
     }
-
 
     private void onTileClick(HexagonTile tile, int x, int y) {
         if (gameModel == null) {
@@ -109,7 +110,7 @@ public class MainController {
 
         try {
             int player = gameModel.onTileClick(x, y);
-            tile.setTileColorByPlayerId(player,selectedColor);
+            tile.setTileColorByPlayerId(player, selectedColor);
 
             boolean gameState = gameModel.checkWin();
             if (gameState) {
@@ -117,7 +118,7 @@ public class MainController {
                 gameModel = null;
                 showConfettiEffect();
             } else {
-                incrementTurnCount();
+                updateTurnCount();
             }
         } catch (Exception e) {
             // Tile is already occupied
@@ -129,14 +130,13 @@ public class MainController {
         alert.setTitle("Game Over");
         alert.setHeaderText(null);
         String playerColor = player == GameModel.PLAYER1 ? selectedColorName : selectedColorName2;
-        alert.setContentText("Player " + playerColor + " wins in turn " + turnCount + "!");
 
+        alert.setContentText("Player " + playerColor + " wins in turn " + gameModel.getTurnCount() + "!");
         alert.showAndWait();
     }
 
-    private void incrementTurnCount() {
-        turnCount++;
-        turnText.setText("Turn: " + turnCount); // Tur sayısını görsel arayüzde günceller
+    private void updateTurnCount() {
+        turnText.setText("Turn: " + gameModel.getTurnCount()); // Tur sayısını görsel arayüzde günceller
     }
 
     public void onStartButtonClick() {
@@ -157,8 +157,7 @@ public class MainController {
         initializeTiles(width, height);
         gameModel = new GameModel(width, height);
 
-        turnCount = 0;
-        turnText.setText("Turn " + turnCount);
+        updateTurnCount();
     }
 
     public void showInfoDialog() {
