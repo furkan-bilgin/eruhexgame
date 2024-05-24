@@ -1,5 +1,7 @@
 package com.eruhexgame;
 
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.animation.FadeTransition;
@@ -8,12 +10,15 @@ import javafx.animation.ParallelTransition;
 import javafx.util.Duration;
 import javafx.scene.text.Text;
 
+import java.util.Map;
+
 
 public class HexagonTile extends Polygon {
     public final static double r = 25;
     public final static double n = Math.sqrt(r * r * 0.75);
     public final static double TILE_HEIGHT = 2 * r;
     public final static double TILE_WIDTH = 2 * n;
+
 
     private Text turnText;
     private int turnCount = 1;
@@ -37,21 +42,24 @@ public class HexagonTile extends Polygon {
         setFill(Color.NAVAJOWHITE);
         setStrokeWidth(2);
     }
+        FillTransition fillTransition = new FillTransition(Duration.seconds(0.2), this);
 
-    public void setTileColorByPlayerId(int playerId) {
-        Color newColor;
+    public void setTileColorByPlayerId(int playerId,Color[] selectedColorr ) {
 
         if (playerId == GameModel.PLAYER1) {
-            newColor = Color.RED;
-        } else if (playerId == GameModel.PLAYER2) {
-            newColor = Color.BLUE;
+            fillTransition.setFromValue(Color.NAVAJOWHITE); // Start from yellow
+            fillTransition.setToValue(selectedColorr[0]); // Transition to new color
+        }else if (playerId == GameModel.PLAYER2) {
+            fillTransition.setFromValue(Color.NAVAJOWHITE); // Start from yellow
+            fillTransition.setToValue(selectedColorr[1]); // Transition to new color
+
         } else {
             return;
         }
 
-        FillTransition fillTransition = new FillTransition(Duration.seconds(0.2), this);
-        fillTransition.setFromValue(Color.NAVAJOWHITE); // Start from yellow
-        fillTransition.setToValue(newColor); // Transition to new color
+
+//        fillTransition.setFromValue(Color.NAVAJOWHITE); // Start from yellow
+//        fillTransition.setToValue(newColor); // Transition to new color
 
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.2), this);
         fadeTransition.setFromValue(0.0);

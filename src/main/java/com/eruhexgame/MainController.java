@@ -2,9 +2,7 @@ package com.eruhexgame;
 
 import javafx.animation.*;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
@@ -12,10 +10,12 @@ import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Background;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class MainController {
@@ -33,6 +33,10 @@ public class MainController {
     private VBox mainContainer;
     @FXML
     private Button startButton;
+    @FXML
+    private ChoiceBox<String> choiceBox;
+    @FXML
+    private ChoiceBox<String> choiceBox2;
 
     @FXML
     public void initialize() {
@@ -42,6 +46,9 @@ public class MainController {
         setSceneBackground();
         // Buton rengini ayarla
         setButtonBackgroundColor();
+        // Oyuncu rengini ayarla
+        setColor();
+
     }
 
     private GameModel gameModel;
@@ -63,15 +70,46 @@ public class MainController {
             }
         }
     }
+    Map<String,Color> colors = new HashMap<>();
+    Color[] selectedColor = new Color[2];
+    String selectedColorName="RED"; //bitis ekraninda rengi bu degiskenle yazdiriyor
+    String selectedColorName2="BLUE";
+
+    public void setColor(){
+        choiceBox.getItems().clear();
+        choiceBox2.getItems().clear();
+        choiceBox.setValue("RED");
+        choiceBox2.setValue("BLUE");
+        colors.put("BLACK",Color.BLACK);
+        colors.put("RED",Color.RED);
+        colors.put("YELLOW",Color.YELLOW);
+        colors.put("GREEN",Color.GREEN);
+        colors.put("BLUE",Color.BLUE);
+        colors.put("WHITE",Color.WHITE);
+
+        choiceBox.getItems().addAll(colors.keySet());
+        choiceBox2.getItems().addAll(colors.keySet());
+
+        selectedColor[0]=Color.RED;
+        selectedColor[1]=Color.BLUE;
+        choiceBox.setOnAction(e -> {
+            selectedColorName = choiceBox.getValue();
+            selectedColor[0] = colors.get(selectedColorName);});
+        choiceBox2.setOnAction(e -> {
+            selectedColorName2 = choiceBox2.getValue();
+            selectedColor[1] = colors.get(selectedColorName2);});
+    }
+
 
     private void onTileClick(HexagonTile tile, int x, int y) {
         if (gameModel == null) {
+            setColor();
             return;
         }
 
         try {
             int player = gameModel.onTileClick(x, y);
-            tile.setTileColorByPlayerId(player);
+            tile.setTileColorByPlayerId(player,selectedColor);
 
             boolean gameState = gameModel.checkWin();
             if (gameState) {
@@ -90,7 +128,7 @@ public class MainController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Game Over");
         alert.setHeaderText(null);
-        String playerColor = player == GameModel.PLAYER1 ? "RED" : "BLUE";
+        String playerColor = player == GameModel.PLAYER1 ? selectedColorName : selectedColorName2;
         alert.setContentText("Player " + playerColor + " wins in turn " + turnCount + "!");
 
         alert.showAndWait();

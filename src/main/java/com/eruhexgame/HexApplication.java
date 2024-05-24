@@ -20,6 +20,7 @@ public class HexApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HexApplication.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Hex Game");
         primaryStage.show();
     }
 }
