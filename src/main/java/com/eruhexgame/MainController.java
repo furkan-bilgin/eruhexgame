@@ -1,6 +1,7 @@
 package com.eruhexgame;
 
 import javafx.animation.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -62,6 +63,13 @@ public class MainController {
                 int finalX = x;
                 int finalY = y;
                 HexagonTile tile = new HexagonTile(xCoord, yCoord);
+                // GameModel mevcutsa ona göre renk seç
+                if (gameModel != null) {
+                    int playerId = gameModel.getTilePlayerId(x, y);
+                    if (playerId != GameModel.EMPTY) {
+                        tile.setTileColorByPlayerId(playerId, selectedColor, false);
+                    }
+                }
                 tile.setOnMouseClicked(_ -> onTileClick(tile, finalX, finalY));
                 tileContainer.getChildren().add(tile);
             }
@@ -69,7 +77,7 @@ public class MainController {
     }
 
     Map<String,Color> colors = new HashMap<>();
-    Color[] selectedColor = new Color[2];
+    Map<Integer, Color> selectedColor = new HashMap<>();
     String selectedColorName = "RED"; //bitis ekraninda rengi bu degiskenle yazdiriyor
     String selectedColorName2 = "BLUE";
 
@@ -88,18 +96,33 @@ public class MainController {
         choiceBox.getItems().addAll(colors.keySet());
         choiceBox2.getItems().addAll(colors.keySet());
 
-        selectedColor[0] = Color.RED;
-        selectedColor[1] = Color.BLUE;
+        selectedColor.put(GameModel.PLAYER1, Color.RED);
+        selectedColor.put(GameModel.PLAYER2, Color.BLUE);
 
         choiceBox.setOnAction(e -> {
-            selectedColorName = choiceBox.getValue();
-            selectedColor[0] = colors.get(selectedColorName);
+            onChoiceBoxChange(e, GameModel.PLAYER1, choiceBox, choiceBox2);
         });
 
         choiceBox2.setOnAction(e -> {
-            selectedColorName2 = choiceBox2.getValue();
-            selectedColor[1] = colors.get(selectedColorName2);
+            onChoiceBoxChange(e, GameModel.PLAYER2, choiceBox2, choiceBox);
         });
+    }
+
+    private void onChoiceBoxChange(ActionEvent e, int playerId, ChoiceBox<String> choiceBox, ChoiceBox<String> otherChoiceBox) {
+        if (gameModel == null) {
+            return;
+        }
+        if (choiceBox.getValue().equals(otherChoiceBox.getValue())) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("You cannot select the same color for both players!");
+            alert.showAndWait();
+            return;
+        }
+        selectedColorName = choiceBox.getValue();
+        selectedColor.put(playerId, colors.get(selectedColorName));
+        initializeTiles(gameModel.getWidth(), gameModel.getHeight());
     }
 
     private void onTileClick(HexagonTile tile, int x, int y) {
@@ -110,18 +133,34 @@ public class MainController {
 
         try {
             int player = gameModel.onTileClick(x, y);
-            tile.setTileColorByPlayerId(player, selectedColor);
+            tile.setTileColorByPlayerId(player, selectedColor, true);
 
             boolean gameState = gameModel.checkWin();
             if (gameState) {
                 showWinPopup(player);
-                gameModel = null;
                 showConfettiEffect();
+
+                gameModel = null;
             } else {
                 updateTurnCount();
+
+                if (gameModel.canSwap()) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Swap Tiles");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Do you want to swap tiles?");
+                    alert.showAndWait();
+
+                    if (alert.getResult() == ButtonType.OK) {
+                        gameModel.doSwap();
+
+                        // Tile'ları yenilemek lazım, çünkü tıklama harici bir şekilde tile'lar değişti
+                        initializeTiles(gameModel.getWidth(), gameModel.getHeight());
+                    }
+                }
             }
         } catch (Exception e) {
-            // Tile is already occupied
+            // Tile dolu
         }
     }
 
@@ -153,10 +192,9 @@ public class MainController {
         } else {
             return;
         }
-
-        initializeTiles(width, height);
         gameModel = new GameModel(width, height);
 
+        initializeTiles(width, height);
         updateTurnCount();
     }
 
@@ -174,8 +212,7 @@ public class MainController {
                 new Image("https://static.vecteezy.com/system/resources/thumbnails/008/383/980/small_2x/abstract-seamless-pattern-white-gray-ceramic-tiles-floor-concrete-hexagonal-paver-blocks-design-geometric-mosaic-texture-for-the-decoration-of-the-bathroom-illustration-free-vector.jpg", 462, 400, false, true),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
-        // Then you set to your node
-        mainContainer.setBackground(new Background(myBI));
+        // mainContainer.setBackground(new Background(myBI));
     }
 
     private void setButtonBackgroundColor() {
@@ -187,7 +224,7 @@ public class MainController {
         int numConfetti = 300; // Konfeti parçacık sayısı
 
         for (int i = 0; i < numConfetti; i++) {
-            Rectangle confetti = new Rectangle(5, 10);
+            Rectangle confetti = new Rectangle(4, 8);
             confetti.setFill(Color.color(random.nextDouble(), random.nextDouble(), random.nextDouble()));
             confetti.setX(random.nextDouble() * tileContainer.getWidth());
             confetti.setY(-10); // Başlangıç noktası yukarıda

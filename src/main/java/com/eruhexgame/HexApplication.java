@@ -18,7 +18,7 @@ public class HexApplication extends Application {
 
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HexApplication.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 1024, 768);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Hex Game");
         primaryStage.show();

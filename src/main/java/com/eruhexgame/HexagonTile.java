@@ -32,19 +32,16 @@ public class HexagonTile extends Polygon {
         setStrokeWidth(2);
     }
 
-    public void setTileColorByPlayerId(int playerId,Color[] selectedColor) {
-        FillTransition fillTransition = new FillTransition(Duration.seconds(0.2), this);
-
-        if (playerId == GameModel.PLAYER1) {
-            fillTransition.setFromValue(Color.NAVAJOWHITE); // Start from yellow
-            fillTransition.setToValue(selectedColor[0]); // Transition to new color
-        } else if (playerId == GameModel.PLAYER2) {
-            fillTransition.setFromValue(Color.NAVAJOWHITE); // Start from yellow
-            fillTransition.setToValue(selectedColor[1]); // Transition to new color
-        } else {
+    public void setTileColorByPlayerId(int playerId, Map<Integer, Color> selectedColor, boolean animate) {
+        if (!animate) {
+            setFill(selectedColor.get(playerId));
             return;
         }
 
+        FillTransition fillTransition = new FillTransition(Duration.seconds(0.2), this);
+        // Sarı -> Player rengi
+        fillTransition.setFromValue(Color.NAVAJOWHITE);
+        fillTransition.setToValue(selectedColor.get(playerId));
         fillTransition.play();
     }
 }

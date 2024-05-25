@@ -21,6 +21,18 @@ public class GameModel {
         }
     }
 
+    public int getTilePlayerId(int x, int y) {
+        return tiles[x][y];
+    }
+
+    public int getWidth() {
+        return tiles.length;
+    }
+
+    public int getHeight() {
+        return tiles[0].length;
+    }
+
     public int getTurnCount() {
         return turnCount;
     }
@@ -36,6 +48,35 @@ public class GameModel {
         currentPlayer = currentPlayer == PLAYER1 ? PLAYER2 : PLAYER1;
 
         return tiles[x][y];
+    }
+
+    public boolean canSwap() {
+        return currentPlayer == PLAYER1 && turnCount == 1;
+    }
+
+    public void doSwap() {
+        int player1TileX = -1;
+        int player1TileY = -1;
+        // Player1'in tile'ını bul
+        for (int x = 0; x < tiles.length; x++) {
+            for (int y = 0; y < tiles[0].length; y++) {
+                if (tiles[x][y] == PLAYER1) {
+                    player1TileX = x;
+                    player1TileY = y;
+                    break;
+                }
+            }
+        }
+        // Player 2'nin tile'ı ile swapla
+        for (int x = 0; x < tiles.length; x++) {
+            for (int y = 0; y < tiles[0].length; y++) {
+                if (tiles[x][y] == PLAYER2) {
+                    tiles[player1TileX][player1TileY] = PLAYER2;
+                    tiles[x][y] = PLAYER1;
+                    return;
+                }
+            }
+        }
     }
 
     public boolean checkWin() {
