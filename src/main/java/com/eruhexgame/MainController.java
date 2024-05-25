@@ -57,12 +57,7 @@ public class MainController {
         tileContainer.getChildren().clear();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                double xCoord = x * HexagonTile.TILE_WIDTH + y * HexagonTile.n;
-                double yCoord = y * HexagonTile.TILE_HEIGHT * 0.75;
-
-                int finalX = x;
-                int finalY = y;
-                HexagonTile tile = new HexagonTile(xCoord, yCoord);
+                HexagonTile tile = new HexagonTile(x, y);
                 // GameModel mevcutsa ona göre renk seç
                 if (gameModel != null) {
                     int playerId = gameModel.getTilePlayerId(x, y);
@@ -70,7 +65,10 @@ public class MainController {
                         tile.setTileColorByPlayerId(playerId, selectedColor, false);
                     }
                 }
+                int finalX = x;
+                int finalY = y;
                 tile.setOnMouseClicked(_ -> onTileClick(tile, finalX, finalY));
+                tile.setStrokeColor(selectedColor, width);
                 tileContainer.getChildren().add(tile);
             }
         }
